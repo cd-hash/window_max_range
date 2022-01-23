@@ -4,26 +4,39 @@ class StackQueue
     def initialize
         @enqueue = Stack.new
         @dequeue = Stack.new
+        @active_stack = @enqueue
     end
 
     def empty?
-        return @enqueue.empty? && @dequeue.empty?
+        return @active_stack.empty?
     end
 
     def size
-        return @enqueue.size + @dequeue.size
+        return @active_stack.size
     end
 
     def enqueue(element)
-        @enqueue.push(element)
+        @active_stack = @enqueue
+        if @dequeue.empty?
+            return @enqueue.push(element)
+        else
+            until @dequeue.empty?
+                @enqueue.push(@dequeue.pop)
+            end
+            return @enqueue.push(element)
+        end
     end
 
     def dequeue
+        @active_stack = @dequeue
         if @dequeue.empty?
             until @enqueue.empty?
                 @dequeue.push(@enqueue.pop)
             end
+            return @dequeue.pop
+        else
+            return @dequeue.pop
         end
-        return @dequeue.pop
+        
     end
 end
